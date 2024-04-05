@@ -1,0 +1,3 @@
+gcc test / test.c - o test / test.exe &&test /./ test.exe 
+
+gcc lexer / testing.c - o lexer / testing.exe &&lexer /./ testing.exe

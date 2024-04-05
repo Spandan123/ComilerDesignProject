@@ -1,0 +1,38 @@
+#include <stdio.h>
+#define A 1
+
+struct pair{
+    int first_, second_;
+};
+
+"union optional {
+    char s;
+    int n;
+};"
+
+enum cities{
+    kolkata,
+    mumbai,
+    pune
+};
+
+'a'
+
+enum states{
+  west_bengal = 68,
+  maharasthra = 45,
+  tamilnadu = 78
+};
+
+int main(){
+    int a = 3;
+    float b = 4.5;
+    for(int i=0; i<10; i++){
+        for(int j=0; j<30; j++){
+            a = a + i;
+            b = b + j / 2.0;
+        }
+    }
+    printf("Hello world!\n");
+    return 0;
+}
