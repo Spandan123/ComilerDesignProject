@@ -7,11 +7,12 @@
 #include "lexer/lexeme.h"
 int main(int argc, char *argv[])
 {
-    char *ffp = "test.txt";
+    char *ffp = "test/test.txt";
     FILE *fp = fopen(ffp, "r");
     if (!fp)
     {
         printf("File cannot be opened!\n");
+        remove(argv[0]);
         exit(1);
     }
     char *s = NULL;
