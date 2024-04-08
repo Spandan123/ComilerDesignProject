@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "lexer/lexer.h"
 #include "lexer/lexeme.h"
+
 int main(int argc, char *argv[])
 {
     char *ffp = "test/test.txt";
@@ -18,14 +19,15 @@ int main(int argc, char *argv[])
     char *s = NULL;
     while (!feof(fp))
     {
-        s = token_string(tokenize(generate_lexeme(fp), lineno, offset));
+        struct token t = tokenize(generate_lexeme(fp));
+        s = token_string(t, lineno, offset);
         if (s)
         {
             printf("%s\n", s);
         }
         else
         {
-            // printf("\nInvalid lexeme at line %d in position %d!\n", lineno, offset + 1);
+            // printf("\nInvalid lexeme at line %d in position %d!\n", lineno, offset - t.len);
         }
     }
     fclose(fp);

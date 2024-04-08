@@ -5,10 +5,10 @@ struct pair{
     int first_, second_;
 };
 
-"union optional {
+union optional {
     char s;
     int n;
-};"
+};
 
 enum cities{
     kolkata,

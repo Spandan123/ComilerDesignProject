@@ -13,8 +13,8 @@ struct token
 {
     char *value;
     char *type;
-    int lineno;
-    int offset;
+    int valid;
+    int len;
 };
 
 struct token_list
@@ -137,9 +137,8 @@ int is_identifier(char *lexeme)
     return 1;
 }
 
-struct token tokenize(char *lexeme, int lineno, int offset)
+struct token tokenize(char *lexeme)
 {
-    // printf("\nlexeme : %s\n", lexeme);
     struct token new_token;
     int len = 0;
     char *temp = lexeme;
@@ -148,6 +147,7 @@ struct token tokenize(char *lexeme, int lineno, int offset)
         len++;
     }
     new_token.value = (char *)malloc((len + 1) * sizeof(char));
+    new_token.len = len;
     strcpy(new_token.value, lexeme);
     if (is_keyword(lexeme))
     {
@@ -181,12 +181,10 @@ struct token tokenize(char *lexeme, int lineno, int offset)
     }
     else
     {
-        new_token.lineno = -1;
-        new_token.offset = -1;
+        new_token.valid = 0;
         return new_token;
     };
-    new_token.lineno = lineno;
-    new_token.offset = offset;
+    new_token.valid = 1;
     return new_token;
 }
 
@@ -245,11 +243,12 @@ char *stoi(int n, char *curr)
     return curr;
 }
 
-char *token_string(struct token temp)
+char *token_string(struct token temp, int lineno, int offset)
 {
+    // printf("\nPosition : %d %d\n", lineno, offset);
     if (strcmp(temp.value, "") == 0)
         return NULL;
-    if (temp.lineno == -1 || temp.offset == -1)
+    if (!temp.valid)
         return NULL;
     char *representation = (char *)malloc(sizeof(char) * 100);
     char *curr = representation;
@@ -271,10 +270,10 @@ char *token_string(struct token temp)
     }
     *curr = ',';
     curr++;
-    curr = stoi(temp.lineno, curr);
+    curr = stoi(lineno, curr);
     *curr = ',';
     curr++;
-    curr = stoi(temp.offset, curr);
+    curr = stoi(offset - temp.len, curr);
     *curr = '>';
     curr++;
     *curr = '\0';
