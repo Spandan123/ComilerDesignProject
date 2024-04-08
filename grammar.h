@@ -41,3 +41,76 @@ extern void intialize_grammar_cfg()
     cfg["arguments"] = {"argument_list", "ε"};
     cfg["argument_list"] = {"expression", "argument_list"};
 }
+
+extern void create_cfg()
+{
+    cfg["expression"] = {
+        "declaration",
+        "assignment",
+        "conditional"};
+
+    cfg["declaration"] = {
+        "basic_declaration",
+        "user_defined_declaration"};
+
+    cfg["basic_declaration"] = {
+        "keyword identifier = expression",
+    };
+
+    cfg["user_defined_declaration"] = {
+        "keyword identifier identifier"};
+
+    cfg["assignment"] = {
+        "identifier = expression"};
+
+    cfg["expression"] = {
+        "identifier",
+        "constant",
+        "function_call",
+        "expression operator expression",
+    };
+
+    cfg["conditional"] = {
+        "expression operator expression"};
+
+    cfg["function_call"] = {
+        "identfier ( argument_list )"};
+
+    cfg["argument_list"] = {
+        "argument",
+        "argument , argument_list"};
+
+    cfg["argument"] = {
+        "expression"};
+
+    cfg["stmt_list"] = {
+        "loop",
+        "loop stmt_list",
+        "definition",
+        "definition stmt_list",
+        "stmt",
+        "stmt stmt_list"};
+
+    cfg["stmt"] = {
+        "expression ;"};
+
+    cfg["loop"] = {
+        "for ( expression ; expression ; expression ) { stmt_list }"};
+
+    cfg["program"] = {
+        "stmt_list"};
+
+    cfg["definition"] = {
+        "function_definiton",
+        "keyword identifier { stmt_list } ;"};
+
+    cfg["function_definition"] = {
+        "keyword identifier ( parameter_list ) { stmt_list }"};
+
+    cfg["parameter_list"] = {
+        "parameter",
+        "parameter , parameter_list"};
+
+    cfg["parameter"] = {
+        "keyword identifier"};
+}
