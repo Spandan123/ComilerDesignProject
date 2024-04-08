@@ -4,8 +4,9 @@
 <basic_declaration> ::= <basic_data_type> <identifier> = <literal>;
 <basic_data_type> ::= int | float
 <literal> ::= <integer_literal> | <float_literal>
-<integer_literal> ::= <digit>+
-<float_literal> ::= <digit>+ . <digit>+
+<integer_literal> ::= <digit_list>
+<float_literal> ::= <digit_list> . <digit_list>
+<digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 <user_defined_declaration> ::= <struct_declaration> | <union_declaration> | <enum_declaration>
 <struct_declaration> ::= struct <identifier> { <struct_members> };
 <struct_members> ::= <declaration> | <declaration> <struct_members>
