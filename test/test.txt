@@ -7,7 +7,7 @@ struct pair{
 
 union optional {
     char s;
-    int n;
+    int* n;
 };
 
 enum cities{

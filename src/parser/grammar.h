@@ -72,7 +72,7 @@ std::unordered_map<std::string, std::vector<std::string>> create_cfg()
         "expression operator expression"};
 
     cfg["function_call"] = {
-        "identfier ( argument_list )"};
+        "identifier ( argument_list )"};
 
     cfg["argument_list"] = {
         "argument",
@@ -99,7 +99,7 @@ std::unordered_map<std::string, std::vector<std::string>> create_cfg()
         "stmt_list"};
 
     cfg["definition"] = {
-        "function_definiton",
+        "function_definition",
         "keyword identifier { stmt_list } ;"};
 
     cfg["function_definition"] = {
