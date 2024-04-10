@@ -8,7 +8,6 @@
 #endif // FINAL_ASSIGNMENT_LEXEME_H
 #include <stdio.h>
 #include <stdlib.h>
-// #include "lexer.h"
 
 int lineno = 1;
 int offset = 0;

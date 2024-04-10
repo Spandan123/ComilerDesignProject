@@ -73,7 +73,7 @@ extern int is_special_character(char lexeme)
 
 extern int is_operator(char *lexeme)
 {
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 11; i++)
     {
         if (strcmp(lexeme, operators[i]) == 0)
         {
@@ -109,7 +109,7 @@ int is_constant(char *lexeme, int len)
     {
         return 1;
     }
-    if (*lexeme == '\'' && *(lexeme + 2) == '\'' || *(lexeme + 3) == '\0')
+    if (*lexeme == '\'' && *(lexeme + 2) == '\'' && *(lexeme + 3) == '\0')
     {
         return 1;
     }
