@@ -1,1 +1,1 @@
-gcc test/test.c -o test/test.exe &&test/./test.exe 
+gcc test/test.c -o test/test.exe test/./test.exe 
