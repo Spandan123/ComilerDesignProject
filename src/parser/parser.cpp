@@ -7,10 +7,11 @@
 using namespace std;
 
 vector<string> nonterminals;
-vector<string> terminals = {"keyword", "constant", "identifier", "special_character", "operator"};
+vector<string> terminals = {"keyword", "identifier"};
 vector<string> special_charactershere = {};
 unordered_map<string, set<string>> first;
 unordered_map<string, set<string>> follow;
+string start_symbol = "program";
 
 string trim(const string &s)
 {
@@ -64,7 +65,7 @@ void printMap(unordered_map<string, set<string>> x)
     }
 }
 
-vector<string> findNonTerminals(vector<string> &terminals, unordered_map<std::string, std::vector<std::string>> cfg)
+vector<string> findNonTerminals(unordered_map<std::string, std::vector<std::string>> cfg)
 {
     for (auto it = cfg.begin(); it != cfg.end(); it++)
     {
@@ -90,11 +91,34 @@ void initialize_first()
     }
 }
 
-bool isTerminal(string s)
+bool isNonTerminal(string s)
 {
-    if (find(terminals.begin(), terminals.end(), s) != terminals.end())
+    if (find(nonterminals.begin(), nonterminals.end(), s) != nonterminals.end())
         return 1;
     return 0;
+}
+
+void findTerminals(unordered_map<std::string, std::vector<std::string>> cfg)
+{
+    for (auto it : cfg)
+    {
+        string a = it.first;
+        for (auto prod : it.second)
+        {
+            vector<string> rhs = split(prod, ' ');
+            for (auto it1 : rhs)
+            {
+                if (find(nonterminals.begin(), nonterminals.end(), (it1)) == nonterminals.end())
+                {
+                    if (find(terminals.begin(), terminals.end(), (it1)) == terminals.end())
+                    {
+                        terminals.push_back((it1));
+                        first[it1].insert(it1);
+                    }
+                }
+            }
+        }
+    }
 }
 
 void find_first(unordered_map<std::string, std::vector<std::string>> cfg)
@@ -108,14 +132,11 @@ void find_first(unordered_map<std::string, std::vector<std::string>> cfg)
             for (auto it1 = rhs.begin(); it1 != rhs.end(); it1++)
             {
                 //     cout << *(it1) << "  a  ";
-                if (isTerminal(*(it1)))
+                if (!isNonTerminal(*(it1)))
                 {
                     first[a].insert(*(it1));
-                    break;
-                }
-                else if (*(it1) == "for")
-                {
-                    first[a].insert("keyword");
+                    if (find(terminals.begin(), terminals.end(), *(it1)) == terminals.end())
+                        terminals.push_back(*(it1));
                     break;
                 }
                 else
@@ -133,18 +154,94 @@ void find_first(unordered_map<std::string, std::vector<std::string>> cfg)
     }
 }
 
-void find_follow() {}
+void initialise_follow(unordered_map<std::string, std::vector<std::string>> cfg)
+{
+    for (auto it : cfg)
+    {
+        follow[it.first] = {};
+    }
+    follow[start_symbol].insert("$");
+    terminals.push_back("$");
+}
 
-int main(int argc, char *argv[])
+void find_follow(unordered_map<std::string, std::vector<std::string>> cfg)
+{
+    for (auto it : cfg)
+    {
+        string a = it.first;
+        for (auto prod : it.second)
+        {
+            vector<string> rhs = split(prod, ' ');
+            int size = rhs.size();
+            if (size == 1)
+            {
+                // cout << rhs[0] << endl;
+                if (!isNonTerminal(rhs[0]))
+                {
+                    continue;
+                }
+                else
+                {
+                    for (auto x = follow[a].begin(); x != follow[a].end(); x++)
+                    {
+                        follow[rhs[0]].insert(*(x));
+                    }
+                }
+            }
+            else
+            {
+                for (int i = size - 1; i > -1; i--)
+                {
+                    if (!isNonTerminal(rhs[i]))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        if (i == size - 1)
+                        {
+                            for (auto x = follow[a].begin(); x != follow[a].end(); x++)
+                            {
+                                follow[rhs[i]].insert(*(x));
+                            }
+                        }
+                        else
+                        {
+                            for (auto y : first[rhs[i+1]])
+                            {
+                                follow[rhs[i]].insert(y);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void run_parser()
 {
     unordered_map<std::string, std::vector<std::string>> cfg_here = create_cfg();
     print_cfg();
-    nonterminals = findNonTerminals(terminals, cfg_here);
-    printMap(nonterminals);
+    nonterminals = findNonTerminals(cfg_here);
+    // printMap(nonterminals);
     initialize_first();
-    printMap(first);
+    findTerminals(cfg_here);
+    // printMap(first);
     find_first(cfg_here);
     find_first(cfg_here);
+    initialise_follow(cfg_here);
+    find_follow(cfg_here);
+    find_follow(cfg_here);
     printMap(first);
+    //printMap(follow);
+    // printMap(nonterminals);
+    // cout << nonterminals.size();
+    printMap(terminals);
+}
+
+int main(int argc, char *argv[])
+{
+    run_parser();
     remove(argv[0]);
 }

@@ -44,7 +44,12 @@ std::unordered_map<std::string, std::vector<std::string>> cfg;
 
 std::unordered_map<std::string, std::vector<std::string>> create_cfg()
 {
+
     cfg["expression"] = {
+        "identifier",
+        "constant",
+        "function_call",
+        "expression operator expression",
         "declaration",
         "assignment",
         "conditional"};
@@ -61,12 +66,6 @@ std::unordered_map<std::string, std::vector<std::string>> create_cfg()
 
     cfg["assignment"] = {
         "identifier = expression"};
-
-    cfg["expression"] = {
-        "identifier",
-        "constant",
-        "function_call",
-        "expression operator expression"};
 
     cfg["conditional"] = {
         "expression operator expression"};
