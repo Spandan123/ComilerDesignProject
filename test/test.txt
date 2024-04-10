@@ -1,6 +1,8 @@
 #include <stdio.h>
 #define A 1
 
+a++;
+
 struct pair{
     int first_, second_;
 };
@@ -16,7 +18,6 @@ enum cities{
     pune
 };
 
-'a'
 
 enum states{
   west_bengal = 68,
@@ -27,8 +28,8 @@ enum states{
 int main(){
     int a = 3;
     float b = 4.5;
-    for(int i=0; i<10; i++){
-        for(int j=0; j<30; j++){
+    for(int i=0; i< 10; i++){
+        for(int j=0; j< 30; j++){
             a = a + i;
             b = b + j / 2.0;
         }

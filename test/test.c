@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
     FILE *new_fp = fopen("generated_token.txt", "w");
-    fprintf(new_fp, "\n%s\n", token_stream(fp));
+    fprintf(new_fp, "%s", token_stream(fp));
     fclose(fp);
     fclose(new_fp);
     remove(argv[0]);

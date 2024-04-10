@@ -42,7 +42,10 @@ char special_characters[] = {
 char *operators[] = {
     "+", "-", "*", "/", "%",
     "--", "++",
-    "<", ">", "==",
+    "<", ">", "==", "+=", "-=", "*=", "/=", "%=",
+    "!", "&", "|", "^", "&&", "||",
+    "!=", "<=", ">=",
+    "&=", "|=", "^=",
     "="};
 
 int is_keyword(char *lexeme)
@@ -73,7 +76,7 @@ extern int is_special_character(char lexeme)
 
 extern int is_operator(char *lexeme)
 {
-    for (int i = 0; i < 11; i++)
+    for (int i = 0; i < 28; i++)
     {
         if (strcmp(lexeme, operators[i]) == 0)
         {
@@ -85,8 +88,11 @@ extern int is_operator(char *lexeme)
 
 extern int is_operator_(char c)
 {
-    if (c == '-' || c == '+' || c == '<' || c == '>' || c == '=' || c == '*' || c == '/' || c == '%')
+    if (c == '-' || c == '+' || c == '<' || c == '>' || c == '=' || c == '*' || c == '/' || c == '%' || c == '!' || c == '&' || c == '|' || c == '^' || c == '?')
+    {
+        // printf("%c is an operator\n", c);
         return 1;
+    }
     return 0;
 }
 
@@ -149,6 +155,7 @@ struct token tokenize(char *lexeme)
     new_token.value = (char *)malloc((len + 1) * sizeof(char));
     new_token.len = len;
     strcpy(new_token.value, lexeme);
+    // printf("Lexeme: %s\n", lexeme);
     if (is_keyword(lexeme))
     {
         new_token.type = (char *)malloc(sizeof(char) * 8);
@@ -163,6 +170,7 @@ struct token tokenize(char *lexeme)
     {
         new_token.type = (char *)malloc(sizeof(char) * 9);
         strcpy(new_token.type, "operator");
+        // printf("Operator: %s\n", lexeme);
     }
     else if (is_string(lexeme, len))
     {

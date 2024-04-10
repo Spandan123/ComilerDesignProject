@@ -26,6 +26,7 @@ char *generate_lexeme(FILE *fp)
     while (1)
     {
         char c = fgetc(fp);
+
         if (in_string)
         {
             *top = c;
@@ -38,6 +39,7 @@ char *generate_lexeme(FILE *fp)
                 return lexeme;
             }
         }
+
         else if (!in_string && c == '"')
         {
             *top = c;
@@ -45,29 +47,34 @@ char *generate_lexeme(FILE *fp)
             offset++;
             in_string = 1;
         }
+
         else if (c == '\n')
         {
             lineno++;
             offset = 0;
             break;
         }
+
         else if (c == '\t')
         {
             offset += 4;
             break;
         }
+
         else if (c == ' ')
         {
             if (top == lexeme)
                 offset++;
             break;
         }
+
         else if (c == EOF)
         {
             lineno = 1;
             offset = 0;
             break;
         }
+
         else if (c == '#' && top == lexeme)
         {
             *top = '#';
@@ -89,6 +96,7 @@ char *generate_lexeme(FILE *fp)
             *top = '\0';
             return lexeme;
         }
+
         else if (c == '<' && top == lexeme)
         {
             *top = c;
@@ -122,6 +130,7 @@ char *generate_lexeme(FILE *fp)
             *top = '\0';
             return lexeme;
         }
+
         else if (c >= '0' && c <= '9' && top == lexeme)
         {
             *top = c;
@@ -140,6 +149,34 @@ char *generate_lexeme(FILE *fp)
             *top = '\0';
             return lexeme;
         }
+
+        else if (is_operator_(c) && top == lexeme)
+        {
+            // printf("%c is an operator\n", c);
+            // printf("First character is operator\n");
+            *top = c;
+            top++;
+            offset++;
+            c = fgetc(fp);
+            if (is_operator_(c))
+            {
+                // printf("%c is an operator\n", c);
+                *top = c;
+                top++;
+                offset++;
+            }
+            else
+            {
+                ungetc(c, fp);
+            }
+        }
+
+        else if (is_operator_(c) && top != lexeme)
+        {
+            ungetc(c, fp);
+            break;
+        }
+
         else if (is_special_character(c))
         {
             if (top == lexeme)
@@ -154,25 +191,7 @@ char *generate_lexeme(FILE *fp)
             }
             break;
         }
-        else if (is_operator_(c))
-        {
-            if (top == lexeme)
-            {
-                *top = c;
-                top++;
-                c = fgetc(fp);
-                if (is_operator_(c))
-                {
-                    *top = c;
-                    top++;
-                }
-                else
-                {
-                    ungetc(c, fp);
-                }
-            }
-            break;
-        }
+
         else
         {
             *top = c;
@@ -180,6 +199,11 @@ char *generate_lexeme(FILE *fp)
             offset++;
         }
     }
+
     *top = '\0';
+    // if (is_operator(lexeme))
+    // {
+    //     printf("operator found: %s\n", lexeme);
+    // }
     return lexeme;
 }
