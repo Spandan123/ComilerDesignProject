@@ -1,13 +1,13 @@
 #include <bits/stdc++.h>
 #include <string.h>
 #include "grammar.h"
-#include <D:\compiler design project\ComilerDesignProject\src\lexer\lexer.h>
+#include "../lexer/lexer.h"
 //  #include <D:\compiler design project\ComilerDesignProject\src\lexer\lexeme.h>
 
 using namespace std;
 
 vector<string> nonterminals;
-vector<string> terminals = {"keyword", "identifier"};
+vector<string> terminals;
 vector<string> special_charactershere = {};
 unordered_map<string, set<string>> first;
 unordered_map<string, set<string>> follow;
@@ -221,18 +221,18 @@ void find_follow(unordered_map<std::string, std::vector<std::string>> cfg)
 
 void run_parser()
 {
-    unordered_map<std::string, std::vector<std::string>> cfg_here = create_cfg();
+    create_cfg();
     print_cfg();
-    nonterminals = findNonTerminals(cfg_here);
+    nonterminals = findNonTerminals(cfg);
     // printMap(nonterminals);
     initialize_first();
-    findTerminals(cfg_here);
+    findTerminals(cfg);
     // printMap(first);
-    find_first(cfg_here);
-    find_first(cfg_here);
-    initialise_follow(cfg_here);
-    find_follow(cfg_here);
-    find_follow(cfg_here);
+    find_first(cfg);
+    find_first(cfg);
+    initialise_follow(cfg);
+    find_follow(cfg);
+    find_follow(cfg);
     printMap(first);
     // printMap(follow);
     //  printMap(nonterminals);
