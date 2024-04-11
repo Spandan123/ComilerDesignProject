@@ -1,7 +1,8 @@
 #include <bits/stdc++.h>
 #include <string.h>
 #include "grammar.h"
-#include <D:\compiler design project\ComilerDesignProject\src\lexer\lexer.h>
+#include "LR1_automaton.h"
+#include "D:\compiler design project\ComilerDesignProject\src\lexer\lexer.h"
 //  #include <D:\compiler design project\ComilerDesignProject\src\lexer\lexeme.h>
 
 using namespace std;
@@ -12,6 +13,8 @@ vector<string> special_charactershere = {};
 unordered_map<string, set<string>> first;
 unordered_map<string, set<string>> follow;
 string start_symbol = "program";
+unordered_map<string, vector<pair<string, set<string>>>> actionTable;
+unordered_map<string, vector<pair<string, set<string>>>> gotoTable;
 
 string trim(const string &s)
 {
@@ -219,11 +222,15 @@ void find_follow(unordered_map<std::string, std::vector<std::string>> cfg)
     }
 }
 
+void LR1ParsingTable()
+{
+}
+
 void run_parser()
 {
     // unordered_map<std::string, std::vector<std::string>> cfg_here = create_cfg();
     create_cfg();
-    //print_cfg();
+    // print_cfg();
     nonterminals = findNonTerminals(cfg);
     // printMap(nonterminals);
     findTerminals(cfg);
