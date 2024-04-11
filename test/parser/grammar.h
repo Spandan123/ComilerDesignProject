@@ -1,17 +1,50 @@
 #include <bits/stdc++.h>
 
-extern std::unordered_map<std::string, std::vector<std::string>> cfg;
+std::unordered_map<std::string, std::vector<std::string>> cfg;
 
 extern void create_cfg()
 {
     cfg["expression"] = {
         "declaration",
         "assignment",
-        "conditional"};
+        "conditional",
+        "operation",
+        "id",
+        "val",
+        "function_call"};
 
-    cfg["declaration"] = {
-        "basic_declaration",
-        "user_defined_declaration"};
+    cfg["operation"] = {
+        "expression bin_op expression",
+        "val bin_op expression",
+        "id unary_op expression",
+        "id postfix_op",
+        "val postfix_op",
+        "prefix_op id",
+        "prefix_op val"};
+
+    cfg["bin_op"] = {
+        "+", "-", "*", "/",
+        "<", ">", "<=", ">=",
+        "==", "!=", "&&", "||",
+        "&", "^", "|"};
+
+    cfg["unary_op"] = {
+        "+=",
+        "-=",
+        "*=",
+        "/=",
+        "&=",
+        "^=",
+        "|=",
+    };
+
+    cfg["postfix_op"] = {
+        "++", "--"};
+
+    cfg["prefix_op"] = {
+        "++", "--", "!"};
+
+    cfg["declaration"] = {"basic_declaration", "user_defined_declaration"};
 
     cfg["basic_declaration"] = {
         "basic_type id = expression"};
@@ -34,14 +67,7 @@ extern void create_cfg()
 
     cfg["assignment"] = {
         "identifier = expression",
-        ".identifier = expression"};
-
-    cfg["expression"] = {
-        "id",
-        "val",
-        "function_call",
-        "expression operator expression",
-    };
+        ". identifier = expression"};
 
     cfg["function_call"] = {
         "id ( argument_list )",

@@ -1,7 +1,5 @@
 // Created by aviroop on 5/4/24.
 //
-#include <stdio.h>
-#include <stdlib.h>
 #include "lexer/token_stream.h"
 
 int main(int argc, char *argv[])
