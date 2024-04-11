@@ -8,7 +8,6 @@ void create_cfg()
     cfg["expression"] = {
         "declaration",
         "assignment",
-        "conditional",
         "operation",
         "id",
         "val",

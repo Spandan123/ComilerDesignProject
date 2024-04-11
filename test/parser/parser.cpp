@@ -222,7 +222,7 @@ void find_follow(unordered_map<std::string, std::vector<std::string>> cfg)
 void run_parser()
 {
     create_cfg();
-    print_cfg();
+    //  print_cfg();
     nonterminals = findNonTerminals(cfg);
     // printMap(nonterminals);
     initialize_first();
