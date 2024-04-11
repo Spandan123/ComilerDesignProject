@@ -207,7 +207,7 @@ void find_follow(unordered_map<std::string, std::vector<std::string>> cfg)
                         }
                         else
                         {
-                            for (auto y : first[rhs[i+1]])
+                            for (auto y : first[rhs[i + 1]])
                             {
                                 follow[rhs[i]].insert(y);
                             }
@@ -234,9 +234,9 @@ void run_parser()
     find_follow(cfg_here);
     find_follow(cfg_here);
     printMap(first);
-    //printMap(follow);
-    // printMap(nonterminals);
-    // cout << nonterminals.size();
+    // printMap(follow);
+    //  printMap(nonterminals);
+    //  cout << nonterminals.size();
     printMap(terminals);
 }
 
