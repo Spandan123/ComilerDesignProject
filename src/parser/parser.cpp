@@ -223,7 +223,7 @@ void run_parser()
 {
     // unordered_map<std::string, std::vector<std::string>> cfg_here = create_cfg();
     create_cfg();
-    print_cfg();
+    //print_cfg();
     nonterminals = findNonTerminals(cfg);
     // printMap(nonterminals);
     findTerminals(cfg);
