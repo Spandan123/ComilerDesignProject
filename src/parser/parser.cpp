@@ -7,7 +7,7 @@
 using namespace std;
 
 vector<string> nonterminals;
-vector<string> terminals = {"keyword", "identifier"};
+vector<string> terminals = {};
 vector<string> special_charactershere = {};
 unordered_map<string, set<string>> first;
 unordered_map<string, set<string>> follow;
@@ -207,7 +207,7 @@ void find_follow(unordered_map<std::string, std::vector<std::string>> cfg)
                         }
                         else
                         {
-                            for (auto y : first[rhs[i+1]])
+                            for (auto y : first[rhs[i + 1]])
                             {
                                 follow[rhs[i]].insert(y);
                             }
@@ -221,22 +221,23 @@ void find_follow(unordered_map<std::string, std::vector<std::string>> cfg)
 
 void run_parser()
 {
-    unordered_map<std::string, std::vector<std::string>> cfg_here = create_cfg();
-    print_cfg();
-    nonterminals = findNonTerminals(cfg_here);
+    // unordered_map<std::string, std::vector<std::string>> cfg_here = create_cfg();
+    create_cfg();
+    //print_cfg();
+    nonterminals = findNonTerminals(cfg);
     // printMap(nonterminals);
+    findTerminals(cfg);
     initialize_first();
-    findTerminals(cfg_here);
     // printMap(first);
-    find_first(cfg_here);
-    find_first(cfg_here);
-    initialise_follow(cfg_here);
-    find_follow(cfg_here);
-    find_follow(cfg_here);
+    find_first(cfg);
+    find_first(cfg);
+    initialise_follow(cfg);
+    find_follow(cfg);
+    find_follow(cfg);
     printMap(first);
-    //printMap(follow);
-    // printMap(nonterminals);
-    // cout << nonterminals.size();
+    printMap(follow);
+    //  printMap(nonterminals);
+    //  cout << nonterminals.size();
     printMap(terminals);
 }
 

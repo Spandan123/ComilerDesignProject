@@ -2,76 +2,77 @@
 
 std::unordered_map<std::string, std::vector<std::string>> cfg;
 
-// extern void intialize_grammar_cfg()
-// {
-//     cfg["program"] = {"declaration_list", "function_list"};
-//     cfg["declaration_list"] = {"declaration", "declaration_list"};
-//     cfg["declaration"] = {"basic_declaration", "user_defined_declaration"};
-//     cfg["basic_declaration"] = {"basic_data_type", "identifier", "=", "literal"};
-//     cfg["basic_data_type"] = {"int", "float"};
-//     cfg["literal"] = {"integer_literal", "float_literal"};
-//     cfg["integer_literal"] = {"digit_list"};
-//     cfg["float_literal"] = {"digit_list", ".", "digit_list"};
-//     cfg["digit"] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
-//     cfg["user_defined_declaration"] = {"struct_declaration", "union_declaration", "enum_declaration"};
-//     cfg["struct_declaration"] = {"struct", "identifier", "{", "struct_members", "}"};
-//     cfg["struct_members"] = {"declaration", "struct_members"};
-//     cfg["union_declaration"] = {"union", "identifier", "{", "union_members", "}"};
-//     cfg["union_members"] = {"declaration", "union_members"};
-//     cfg["enum_declaration"] = {"enum", "identifier", "{", "enum_constants", "}"};
-//     cfg["enum_constants"] = {"identifier", ",", "enum_constants"};
-//     cfg["function_list"] = {"function", "function_list"};
-//     cfg["function"] = {"return_type", "identifier", "(", "parameters", ")", "{", "body", "}"};
-//     cfg["return_type"] = {"basic_data_type", "void"};
-//     cfg["parameters"] = {"parameter_list", "void"};
-//     cfg["parameter_list"] = {"parameter", "parameter_list"};
-//     cfg["parameter"] = {"basic_data_type", "identifier"};
-//     cfg["body"] = {"statement_list"};
-//     cfg["statement_list"] = {"statement", "statement_list"};
-//     cfg["statement"] = {"declaration", "assignment", "loop", "function_call"};
-//     cfg["assignment"] = {"identifier", "=", "expression"};
-//     cfg["loop"] = {"for", "(", "assignment", ";", "condition", ";", "assignment", ")", "{", "body", "}"};
-//     cfg["condition"] = {"expression", "<", "expression"};
-//     cfg["relational_operator"] = {">", "<"};
-//     cfg["expression"] = {"term", "expression"};
-//     cfg["term"] = {"factor", "term"};
-//     cfg["factor"] = {"identifier", "literal"};
-//     cfg["add_operator"] = {"+", "-"};
-//     cfg["function_call"] = {"identifier", "(", "arguments", ")"};
-//     cfg["arguments"] = {"argument_list", "ε"};
-//     cfg["argument_list"] = {"expression", "argument_list"};
-// }
-
-std::unordered_map<std::string, std::vector<std::string>> create_cfg()
+void create_cfg()
 {
 
     cfg["expression"] = {
-        "identifier",
-        "constant",
-        "function_call",
-        "expression operator expression",
         "declaration",
         "assignment",
-        "conditional"};
+        "conditional",
+        "operation",
+        "id",
+        "val",
+        "function_call"};
 
-    cfg["declaration"] = {
-        "basic_declaration",
-        "user_defined_declaration"};
+    cfg["operation"] = {
+        "expression bin_op expression",
+        "val bin_op expression",
+        "id unary_op expression",
+        "id postfix_op",
+        "val postfix_op",
+        "prefix_op id",
+        "prefix_op val"};
+
+    cfg["bin_op"] = {
+        "+", "-", "*", "/",
+        "<", ">", "<=", ">=",
+        "==", "!=", "&&", "||",
+        "&", "^", "|"};
+
+    cfg["unary_op"] = {
+        "+=",
+        "-=",
+        "*=",
+        "/=",
+        "&=",
+        "^=",
+        "|=",
+    };
+
+    cfg["postfix_op"] = {
+        "++", "--"};
+
+    cfg["prefix_op"] = {
+        "++", "--", "!"};
+
+    cfg["declaration"] = {"basic_declaration", "user_defined_declaration"};
 
     cfg["basic_declaration"] = {
-        "keyword identifier = expression"};
+        "basic_type id = expression"};
+
+    cfg["basic_type"] = {
+        "int",
+        "float",
+        "char",
+        "void",
+        "type *"};
 
     cfg["user_defined_declaration"] = {
-        "keyword identifier identifier"};
+        "struct id id = { assignment_list } ",
+        "union id id = { assignment }",
+        "enum id id = id"};
 
     cfg["assignment"] = {
-        "identifier = expression"};
+        "id = expression",
+        ". id = expression"};
 
-    cfg["conditional"] = {
-        "expression operator expression"};
+    cfg["assignment_list"] = {
+        "assignment",
+        "assignment , assignment_list"};
 
     cfg["function_call"] = {
-        "identifier ( argument_list )"};
+        "id ( argument_list )",
+        "id ( )"};
 
     cfg["argument_list"] = {
         "argument",
@@ -92,31 +93,77 @@ std::unordered_map<std::string, std::vector<std::string>> create_cfg()
         "expression ;"};
 
     cfg["loop"] = {
-        "for ( expression ; expression ; expression ) { stmt_list }"};
+        "for ( expression ; expression ; expression ) { stmt_list }",
+        "for ( expression ; expression ; expression ) stmt"};
 
     cfg["program"] = {
         "stmt_list"};
 
     cfg["definition"] = {
-        "function_definition",
-        "keyword identifier { stmt_list } ;"};
+        "function_definiton",
+        "derived_data_type_definition ;"};
+
+    cfg["derived_data_type_definition"] = {
+        "struct id { field_list }",
+        "enum id { field_list }",
+        "union id { field_list }"};
+
+    cfg["field_list"] = {
+        "field",
+        "field ; field_list"};
+
+    cfg["field"] = {
+        "basic_type id",
+        "basic_type id_list",
+        "basic_type id arr_ptr",
+        "struct id id",
+        "struct id id_list",
+        "struct id id arr_ptr",
+        "union id id",
+        "union id id_list",
+        "union id id arr_ptr",
+        "enum id id",
+        "enum id id_list",
+        "enum id id arr_ptr",
+    };
+
+    cfg["id_list"] = {
+        "id",
+        "id , id_list"};
 
     cfg["function_definition"] = {
-        "keyword identifier ( parameter_list ) { stmt_list }"};
+        "basic_type id ( parameter_list ) { stmt_list }",
+        "basic_type id ( ) { stmt_list }",
+        "struct id id ( parameter_list ) { stmt_list }",
+        "struct id id ( ) { stmt_list }",
+        "union id id ( parameter_list ) { stmt_list }",
+        "union id id ( ) { stmt_list }",
+        "enum id id ( ) { stmt_list }",
+        "enum id id ( parameter_list ) { stmt_list }"};
 
     cfg["parameter_list"] = {
         "parameter",
         "parameter , parameter_list"};
 
     cfg["parameter"] = {
-        "keyword identifier"};
-    return cfg;
+        "basic_type id",
+        "basic_type id arr_ptr",
+        "struct id id",
+        "struct id id arr_ptr",
+        "union id id",
+        "union id id arr_ptr",
+        "enum id id",
+        "enum id id arr_ptr"};
+
+    cfg["arr_ptr"] = {
+        "*", "[ ]",
+        "* arr_ptr", "arr_ptr [ ]"};
 }
 
-extern void print_cfg()
-{
-    for (auto it = cfg.begin(); it != cfg.end(); it++)
-    {
-        std::cout << it->first << " ";
-    }
-}
+// extern void print_cfg()
+// {
+//     for (auto it = cfg.begin(); it != cfg.end(); it++)
+//     {
+//         std::cout << it->first << " ";
+//     }
+// }
