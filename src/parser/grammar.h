@@ -160,10 +160,10 @@ void create_cfg()
         "* arr_ptr", "arr_ptr [ ]"};
 }
 
-extern void print_cfg()
-{
-    for (auto it = cfg.begin(); it != cfg.end(); it++)
-    {
-        std::cout << it->first << " ";
-    }
-}
+// extern void print_cfg()
+// {
+//     for (auto it = cfg.begin(); it != cfg.end(); it++)
+//     {
+//         std::cout << it->first << " ";
+//     }
+// }
