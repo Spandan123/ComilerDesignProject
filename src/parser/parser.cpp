@@ -2,7 +2,7 @@
 #include <string.h>
 #include "grammar.h"
 #include "LR1_automaton.h"
-#include "D:\compiler design project\ComilerDesignProject\src\lexer\lexer.h"
+#include "../lexer/lexer.h"
 //  #include <D:\compiler design project\ComilerDesignProject\src\lexer\lexeme.h>
 
 using namespace std;

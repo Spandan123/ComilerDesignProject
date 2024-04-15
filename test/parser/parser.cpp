@@ -1,17 +1,21 @@
 #include <bits/stdc++.h>
 #include <string.h>
 #include "grammar.h"
+#include "LR1_automaton.h"
 #include "../lexer/lexer.h"
 //  #include <D:\compiler design project\ComilerDesignProject\src\lexer\lexeme.h>
 
 using namespace std;
 
 vector<string> nonterminals;
-vector<string> terminals;
+vector<string> terminals = {};
 vector<string> special_charactershere = {};
 unordered_map<string, set<string>> first;
 unordered_map<string, set<string>> follow;
 string start_symbol = "program";
+unordered_map<std::string, std::vector<std::string>> augmented_gramamr;
+unordered_map<string, vector<pair<string, set<string>>>> actionTable;
+unordered_map<string, vector<pair<string, set<string>>>> gotoTable;
 
 string trim(const string &s)
 {
@@ -105,6 +109,7 @@ void findTerminals(unordered_map<std::string, std::vector<std::string>> cfg)
         string a = it.first;
         for (auto prod : it.second)
         {
+            prod = trim(prod);
             vector<string> rhs = split(prod, ' ');
             for (auto it1 : rhs)
             {
@@ -128,6 +133,7 @@ void find_first(unordered_map<std::string, std::vector<std::string>> cfg)
         string a = it->first;
         for (auto &prod : it->second)
         {
+            prod = trim(prod);
             vector<string> rhs = split(prod, ' ');
             for (auto it1 = rhs.begin(); it1 != rhs.end(); it1++)
             {
@@ -171,6 +177,7 @@ void find_follow(unordered_map<std::string, std::vector<std::string>> cfg)
         string a = it.first;
         for (auto prod : it.second)
         {
+            prod = trim(prod);
             vector<string> rhs = split(prod, ' ');
             int size = rhs.size();
             if (size == 1)
@@ -219,25 +226,39 @@ void find_follow(unordered_map<std::string, std::vector<std::string>> cfg)
     }
 }
 
+void augmentedGrammar()
+{
+    augmented_gramamr["augmented_start"] = {"program"};
+    for (auto it : cfg)
+    {
+        augmented_gramamr[it.first] = it.second;
+    }
+}
+
+void LR1ParsingTable()
+{
+}
+
 void run_parser()
 {
+    // unordered_map<std::string, std::vector<std::string>> cfg_here = create_cfg();
     create_cfg();
-    //  print_cfg();
+    // print_cfg();
     nonterminals = findNonTerminals(cfg);
     // printMap(nonterminals);
-    initialize_first();
     findTerminals(cfg);
+    initialize_first();
     // printMap(first);
     find_first(cfg);
     find_first(cfg);
     initialise_follow(cfg);
     find_follow(cfg);
     find_follow(cfg);
-    printMap(first);
-    // printMap(follow);
-    //  printMap(nonterminals);
-    //  cout << nonterminals.size();
-    printMap(terminals);
+    // printMap(first);
+    printMap(follow);
+    //    printMap(nonterminals);
+    //    cout << nonterminals.size();
+    // printMap(terminals);
 }
 
 int main(int argc, char *argv[])
