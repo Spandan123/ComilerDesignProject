@@ -240,8 +240,8 @@ void run_parser()
     printMap(terminals);
 }
 
-int main(int argc, char *argv[])
-{
-    run_parser();
-    remove(argv[0]);
-}
+// int main(int argc, char *argv[])
+// {
+//     run_parser();
+//     remove(argv[0]);
+// }
