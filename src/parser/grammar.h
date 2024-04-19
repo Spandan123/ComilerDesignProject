@@ -1,168 +1,207 @@
+#pragma once
 #include <bits/stdc++.h>
+using namespace std;
 
-std::unordered_map<std::string, std::vector<std::string>> cfg;
+unordered_map<string, vector<string>> cfg;
+vector<pair<string, string>> annotated_cfg;
 
 void create_cfg()
 {
+     cfg["program"] = {
+         " stmt_list "};
 
-    cfg["expression"] = {
-         " declaration " ,
-         " assignment " ,
-         " operation " ,
-         " id " ,
-         " val " ,
-         " function_call " };
+     cfg["stmt_list"] = {
+         " loop ",
+         " loop stmt_list ",
+         " definition ",
+         " definition stmt_list ",
+         " stmt ",
+         " stmt stmt_list "};
 
-    cfg["operation"] = {
-         " expression bin_op expression " ,
-         " val bin_op expression " ,
-         " id unary_op expression " ,
-         " id postfix_op " ,
-         " val postfix_op " ,
-         " prefix_op id " ,
-         " prefix_op val " };
+     cfg["expression"] = {
+         " declaration ",
+         " assignment ",
+         " operation ",
+         " id ",
+         " val ",
+         " function_call "};
 
-    cfg["bin_op"] = {
-         " + " ,  " - " ,  " * " ,  " / " ,
-         " < " ,  " > " ,  " <= " ,  " >= " ,
-         " == " ,  " != " ,  " && " ,  " || " ,
-         " & " ,  " ^ " ,  " | " };
+     cfg["operation"] = {
+         " expression bin_op expression ",
+         " val bin_op expression ",
+         " id unary_op expression ",
+         " id postfix_op ",
+         " val postfix_op ",
+         " prefix_op id ",
+         " prefix_op val "};
 
-    cfg["unary_op"] = {
-         " += " ,
-         " -= " ,
-         " *= " ,
-         " /= " ,
-         " &= " ,
-         " ^= " ,
-         " |= " ,
-    };
+     cfg["bin_op"] = {
+         " + ", " - ", " * ", " / ",
+         " < ", " > ", " <= ", " >= ",
+         " == ", " != ", " && ", " || ",
+         " & ", " ^ ", " | "};
 
-    cfg["postfix_op"] = {
-         " ++ " ,  " -- " };
+     cfg["unary_op"] = {
+         " += ",
+         " -= ",
+         " *= ",
+         " /= ",
+         " &= ",
+         " ^= ",
+         " |= ",
+     };
 
-    cfg["prefix_op"] = {
-         " ++ " ,  " -- " ,  " ! " };
+     cfg["postfix_op"] = {
+         " ++ ", " -- "};
 
-    cfg["declaration"] = { " basic_declaration " ,  " user_defined_declaration " };
+     cfg["prefix_op"] = {
+         " ++ ", " -- ", " ! "};
 
-    cfg["basic_declaration"] = {
-         " basic_type id = expression " };
+     cfg["declaration"] = {" basic_declaration ", " user_defined_declaration "};
 
-    cfg["basic_type"] = {
-         " int " ,
-         " float " ,
-         " char " ,
-         " void " ,
-         " type * " };
+     cfg["basic_declaration"] = {
+         " basic_type id = expression "};
 
-    cfg["user_defined_declaration"] = {
-         " struct id id = { assignment_list }  " ,
-         " union id id = { assignment } " ,
-         " enum id id = id " };
+     cfg["basic_type"] = {
+         " int ",
+         " float ",
+         " char ",
+         " void ",
+         " type * "};
 
-    cfg["assignment"] = {
-         " id = expression " ,
-         " . id = expression " };
+     cfg["user_defined_declaration"] = {
+         " struct id id = { assignment_list }  ",
+         " union id id = { assignment } ",
+         " enum id id = id "};
 
-    cfg["assignment_list"] = {
-         " assignment " ,
-         " assignment , assignment_list " };
+     cfg["assignment"] = {
+         " id = expression "};
 
-    cfg["function_call"] = {
-         " id ( argument_list ) " ,
-         " id ( ) " };
+     cfg["assignment_list"] = {
+         " assignment ",
+         " assignment , assignment_list "};
 
-    cfg["argument_list"] = {
-         " argument " ,
-         " argument , argument_list " };
+     cfg["function_call"] = {
+         " id ( argument_list ) ",
+         " id ( ) "};
 
-    cfg["argument"] = {
-         " expression " };
+     cfg["argument_list"] = {
+         " argument ",
+         " argument , argument_list "};
 
-    cfg["stmt_list"] = {
-         " loop " ,
-         " loop stmt_list " ,
-         " definition " ,
-         " definition stmt_list " ,
-         " stmt " ,
-         " stmt stmt_list " };
+     cfg["argument"] = {
+         " expression "};
 
-    cfg["stmt"] = {
-         " expression ; " };
+     cfg["stmt"] = {
+         " expression ; "};
 
-    cfg["loop"] = {
-         " for ( expression ; expression ; expression ) { stmt_list } " ,
-         " for ( expression ; expression ; expression ) stmt " };
+     cfg["loop"] = {
+         " for ( expression ; expression ; expression ) { stmt_list } ",
+         " for ( expression ; expression ; expression ) stmt "};
 
-    cfg["program"] = {
-         " stmt_list " };
+     cfg["definition"] = {
+         " function_definition ",
+         " derived_data_type_definition ; "};
 
-    cfg["definition"] = {
-        " function_definition ",
-        " derived_data_type_definition ; "};
+     cfg["derived_data_type_definition"] = {
+         " struct id { field_list } ",
+         " enum id { field_list } ",
+         " union id { field_list } "};
 
-    cfg["derived_data_type_definition"] = {
-         " struct id { field_list } " ,
-         " enum id { field_list } " ,
-         " union id { field_list } " };
+     cfg["field_list"] = {
+         " field ",
+         " field ; field_list "};
 
-    cfg["field_list"] = {
-         " field " ,
-         " field ; field_list " };
+     cfg["field"] = {
+         " basic_type id ",
+         " basic_type id_list ",
+         " basic_type id arr_ptr ",
+         " struct id id ",
+         " struct id id_list ",
+         " struct id id arr_ptr ",
+         " union id id ",
+         " union id id_list ",
+         " union id id arr_ptr ",
+         " enum id id ",
+         " enum id id_list ",
+         " enum id id arr_ptr ",
+     };
 
-    cfg["field"] = {
-         " basic_type id " ,
-         " basic_type id_list " ,
-         " basic_type id arr_ptr " ,
-         " struct id id " ,
-         " struct id id_list " ,
-         " struct id id arr_ptr " ,
-         " union id id " ,
-         " union id id_list " ,
-         " union id id arr_ptr " ,
-         " enum id id " ,
-         " enum id id_list " ,
-         " enum id id arr_ptr " ,
-    };
+     cfg["id_list"] = {
+         "  id ",
+         "  id , id_list "};
 
-    cfg["id_list" ] = {
-         "  id " ,
-         "  id , id_list " };
+     cfg["function_definition"] = {
+         " basic_type id ( parameter_list ) { stmt_list }  ",
+         " basic_type id ( ) { stmt_list }  ",
+         " struct id id ( parameter_list ) { stmt_list }  ",
+         " struct id id ( ) { stmt_list } ",
+         " union id id ( parameter_list ) { stmt_list } ",
+         " union id id ( ) { stmt_list } ",
+         " enum id id ( ) { stmt_list } ",
+         " enum id id ( parameter_list ) { stmt_list } "};
 
-    cfg["function_definition"] = {
-         "  basic_type id ( parameter_list ) { stmt_list }  " ,
-         "  basic_type id ( ) { stmt_list }  " ,
-         "  struct id id ( parameter_list ) { stmt_list }  " ,
-         " struct id id ( ) { stmt_list } " ,
-         " union id id ( parameter_list ) { stmt_list } " ,
-         " union id id ( ) { stmt_list } " ,
-         " enum id id ( ) { stmt_list } " ,
-         " enum id id ( parameter_list ) { stmt_list } " };
+     cfg["parameter_list"] = {
+         " parameter ",
+         " parameter , parameter_list "};
 
-    cfg["parameter_list"] = {
-         " parameter " ,
-         " parameter , parameter_list " };
+     cfg["parameter"] = {
+         " basic_type id ",
+         " basic_type id arr_ptr ",
+         " struct id id ",
+         " struct id id arr_ptr ",
+         " union id id ",
+         " union id id arr_ptr ",
+         " enum id id ",
+         " enum id id arr_ptr "};
 
-    cfg["parameter"] = {
-         " basic_type id " ,
-         " basic_type id arr_ptr " ,
-         " struct id id " ,
-         " struct id id arr_ptr " ,
-         " union id id " ,
-         " union id id arr_ptr " ,
-         " enum id id " ,
-         " enum id id arr_ptr " };
-
-    cfg["arr_ptr"] = {
-         " * " ,  " [ ] " ,
-         " * arr_ptr " ,  " arr_ptr [ ] " };
+     cfg["arr_ptr"] = {
+         " * ", " [ ] ",
+         " * arr_ptr ", " arr_ptr [ ] "};
 }
 
-// extern void print_cfg()
-// {
-//     for (auto it = cfg.begin(); it != cfg.end(); it++)
-//     {
-//         std::cout << it->first <<  "   " ;
-//     }
-// }
+void print_cfg()
+{
+     for (auto it : cfg)
+     {
+          cout << it.first << " : \n";
+          for (auto it1 : it.second)
+          {
+               cout << "   " << it1 << "\n";
+          }
+          cout << endl;
+     }
+}
+
+void create_annotated_cfg()
+{
+     int num = 0;
+     for (auto it : cfg)
+     {
+          for (auto itt : it.second)
+          {
+               annotated_cfg.push_back(make_pair(it.first, itt));
+          }
+     }
+}
+
+void print_annotated_cfg()
+{
+     for (int i = 0; i < annotated_cfg.size(); i++)
+     {
+          cout << i + 1 << ") " << annotated_cfg[i].first << " -> " << annotated_cfg[i].second << endl;
+     }
+}
+
+int get_position(string lhs, string rhs)
+{
+     for (int i = 0; i < annotated_cfg.size(); i++)
+     {
+          if (lhs == annotated_cfg[i].first && rhs == annotated_cfg[i].second)
+          {
+
+               return i;
+          }
+     }
+     return -1;
+}

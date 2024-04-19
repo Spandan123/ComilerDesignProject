@@ -50,7 +50,14 @@ public:
                     int dot_pos = find_char('.', prod_str);
                     if (dot_pos == prod_str.size() - 1)
                     {
-                                        }
+                        string new_str = prod_str;
+                        new_str[dot_pos] = ' ';
+                        int pos = get_position(n_t, new_str);
+                        if (pos != -1)
+                        {
+                            reduce_table[num] = pos;
+                        }
+                    }
                     int first_gap_after_dot = find_char(' ', prod_str, dot_pos);
                     string next_str = prod_str.substr(dot_pos + 1, first_gap_after_dot - dot_pos - 1);
                     // cout << "Next : " << next_str << endl;

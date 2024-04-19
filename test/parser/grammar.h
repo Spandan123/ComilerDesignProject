@@ -192,3 +192,16 @@ void print_annotated_cfg()
         cout << i + 1 << ") " << annotated_cfg[i].first << " -> " << annotated_cfg[i].second << endl;
     }
 }
+
+int get_position(string lhs, string rhs)
+{
+    for (int i = 0; i < annotated_cfg.size(); i++)
+    {
+        if (lhs == annotated_cfg[i].first && rhs == annotated_cfg[i].second)
+        {
+
+            return i;
+        }
+    }
+    return -1;
+}

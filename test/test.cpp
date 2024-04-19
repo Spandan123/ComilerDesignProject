@@ -3,6 +3,7 @@
 #include "lexer/token_stream.h"
 #include "parser/parser.h"
 #include "parser/LR1_automaton.h"
+#include "parser/parsing_table.h"
 int main(int argc, char *argv[])
 {
     char *ffp = "test.txt";
@@ -18,7 +19,9 @@ int main(int argc, char *argv[])
     fclose(fp);
     fclose(new_fp);
     run_parser();
-    // LR1_item_set::create_LR1_automaton();
+    LR1_item_set::create_LR1_automaton();
+    create_parsing_table();
+    print_parsing_table();
     // print_item_mapping();
     remove(argv[0]);
     return 0;
