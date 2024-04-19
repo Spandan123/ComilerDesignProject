@@ -1,7 +1,8 @@
+#pragma once
 #include <bits/stdc++.h>
 #include "grammar.h"
 #include "parser.h"
-
+#include "../../colors.h"
 using namespace std;
 
 int find_char(const char &c, const string &target, int offset = 0)
@@ -14,69 +15,70 @@ int find_char(const char &c, const string &target, int offset = 0)
     return -1;
 }
 
-unordered_map<int, LR1_item_set *> LR1_automaton_map;
-unordered_map<int, pair<int, string>> gotos;
+class LR1_item_set;
 
+unordered_map<int, unordered_map<string, int>> gotos_table;
+unordered_map<int, int> reduce_table;
+// 0 -> 1,"fe"
+
+// 0 -> 2, "eine"
+unordered_map<int, LR1_item_set *> dfa;
+set<int> already_done;
+bool duplicate_item(LR1_item_set x);
+void print_item_mapping();
 class LR1_item_set
 {
-private:
+public:
     unordered_map<string, unordered_map<string, set<string>>> items;
-
-    LR1_item_set(unordered_map<string, unordered_map<string, set<string>>> kernel) : items(kernel)
+    int num;
+    LR1_item_set(unordered_map<string, unordered_map<string, set<string>>> kernel, int num) : items(kernel), num(num)
     {
+        // cout << "\n\n";
         while (1)
         {
+            unordered_map<string, unordered_map<string, set<string>>> dup_items = items;
             int cnt = 0;
-            unordered_map<string, unordered_map<string, set<string>>> dup_item = items;
-            for (auto p : items)
+            for (auto k_item : items)
             {
-                string A = p.first;
-                for (auto pp : p.second)
+                string n_t = k_item.first;
+                // cout << "Non-terminal : " << n_t << endl;
+                for (auto prods : k_item.second)
                 {
-                    string prod = pp.first;
-                    int n = find_char('.', prod);
-                    if (n != prod.size() - 1)
+                    string prod_str = prods.first;
+                    // cout << "Production : " << prod_str << endl;
+                    set<string> follows = prods.second;
+                    int dot_pos = find_char('.', prod_str);
+                    if (dot_pos == prod_str.size() - 1)
                     {
-                        int x = find_char(' ', prod, n);
-                        int y = find_char(' ', prod, x);
-                        string B = prod.substr(n + 1, x - n - 1);
-                        string beta = x == prod.size() - 1 ? "" : prod.substr(x + 1, y - x - 1);
-                        if (cfg.find(B) == cfg.end())
+                                        }
+                    int first_gap_after_dot = find_char(' ', prod_str, dot_pos);
+                    string next_str = prod_str.substr(dot_pos + 1, first_gap_after_dot - dot_pos - 1);
+                    // cout << "Next : " << next_str << endl;
+                    if (next_str.empty() || !isNonTerminal(next_str))
+                    {
+                        continue;
+                    }
+
+                    for (auto new_produc : cfg[next_str])
+                    {
+                        // cout << "New productions : " << new_produc << endl;
+                        string new_prod = new_produc;
+                        new_prod[0] = '.';
+                        for (auto temp : follow[next_str])
                         {
-                            continue;
-                        }
-                        for (auto new_prods : cfg[B])
-                        {
-                            string ppp = new_prods;
-                            ppp[0] = '.';
-                            if (beta == "")
+                            if (dup_items[next_str][new_prod].find(temp) == dup_items[next_str][new_prod].end())
                             {
-                                for (auto f : pp.second)
-                                {
-                                    if (items.find(B) != items.end() && items[B].find(ppp) != items[B].end() && items[B][ppp].find(f) == items[B][ppp].end())
-                                    {
-                                        dup_item[B][ppp].insert(f);
-                                        cnt++;
-                                    }
-                                }
-                                continue;
-                            }
-                            for (auto f : first[beta])
-                            {
-                                if (items.find(B) != items.end() && items[B].find(ppp) != items[B].end() && items[B][ppp].find(f) == items[B][ppp].end())
-                                {
-                                    dup_item[B][ppp].insert(f);
-                                    cnt++;
-                                }
+                                dup_items[next_str][new_prod].insert(temp);
+                                cnt++;
                             }
                         }
                     }
                 }
             }
-            if (!cnt)
+            if (cnt == 0)
                 break;
             else
-                items = dup_item;
+                items = dup_items;
         }
     }
 
@@ -100,49 +102,140 @@ private:
 
     void create_gotos()
     {
-        unordered_map<string, LR1_item_set> temp;
-        for (auto item : items)
+        unordered_map<string, unordered_map<string, unordered_map<string, set<string>>>> gotos;
+        for (auto elem : items)
         {
-            string A = item.first;
-            for (auto pp : item.second)
+            string n_t = elem.first;
+            for (auto prods : elem.second)
             {
-                string prod = pp.first;
-                int n = find_char('.', prod);
-                if (n != prod.size() - 1)
+                string prod_str = prods.first;
+                int dot_pos = find_char('.', prod_str);
+                int first_gap_after_dot = find_char(' ', prod_str, dot_pos);
+                string next_str = prod_str.substr(dot_pos + 1, first_gap_after_dot - dot_pos - 1);
+                if (next_str.empty())
+                    continue;
+                string new_prod = prod_str;
+                new_prod[dot_pos] = ' ';
+                new_prod[first_gap_after_dot] = '.';
+                // cout << new_prod << endl;
+                if (first_gap_after_dot == prod_str.size() - 1)
+                    gotos[next_str][n_t][new_prod] = prods.second;
+                else
                 {
-                    string B = prod.substr(n + 1);
+                    gotos[next_str][n_t][new_prod] = first[next_str];
                 }
             }
         }
+        int next_num = dfa.size();
+        for (auto goto_ : gotos)
+        {
+            string next_ = goto_.first;
+            unordered_map<string, unordered_map<string, set<string>>> new_kernel;
+            for (auto prods : goto_.second)
+            {
+                string n_t = prods.first;
+                for (auto prod : prods.second)
+                {
+                    string new_prod = prod.first;
+                    new_kernel[n_t][new_prod] = prod.second;
+                }
+            }
+            LR1_item_set new_item(new_kernel, next_num);
+            if (!duplicate_item(new_item))
+            {
+                dfa[next_num] = new LR1_item_set(new_kernel, next_num);
+                gotos_table[num][next_] = next_num;
+                // dfa[next_num]->create_gotos();
+                next_num++;
+            }
+        }
     }
+
+    // sjfe -> .enum id id = id  {follow}
+
+    // n_t = sjfe
+    // next_str : enum
+    // new_prod : enum.id id = id
 
 public:
     void print_item()
     {
         for (auto it : items)
         {
-            cout << it.first << endl;
             for (auto it1 : it.second)
             {
-                cout << it1.first << " -> ";
+                cout << BLUE << it.first << RESET << " -> " << GREEN << it1.first << RESET << YELLOW << " { " << RESET;
                 for (auto it2 : it1.second)
                 {
-                    cout << it2 << " ";
+                    cout << WHITE << it2 << RESET << " ";
                 }
-                cout << endl;
+                cout << YELLOW << "} " << RESET << endl;
             }
             cout << endl;
         }
     }
-    friend void create_LR1_automaton()
+
+    static void create_LR1_automaton()
     {
         unordered_map<string, unordered_map<string, set<string>>> kernel;
-        kernel[" program_ "][".program "] = {"$"};
-        LR1_automaton_map[0] = new LR1_item_set(kernel);
-        LR1_automaton_map[0]->print_item();
+        // print_cfg();
+        kernel["augmented_start"][".program "] = {"$"};
+        dfa[0] = new LR1_item_set(kernel, 0);
+        // dfa[0]->print_item();
+        while (1)
+        {
+            unordered_map<int, LR1_item_set *> dup_dfa;
+            for (auto items : dfa)
+            {
+                dup_dfa[items.first] = new LR1_item_set(items.second->items, items.first);
+            }
+            int x = dup_dfa.size();
+            // cout << "dfa size : " << x << endl;
+            for (auto items : dup_dfa)
+            {
+                if (already_done.find(items.second->num) == already_done.end())
+                {
+                    // cout << "Creating gotos for item " << items.second->num << endl;
+                    items.second->create_gotos();
+                    already_done.insert(items.second->num);
+                }
+            }
+            // cout << "dfa_after size : " << dfa.size() << endl;
+            if (x == dfa.size())
+            {
+                // cout << "Done\n";
+                break;
+            }
+            // print_item_mapping();
+        }
+        for (auto items : dfa)
+        {
+            cout << "\n\nItem " << items.first << "\n";
+            items.second->print_item();
+        }
     }
 };
 
+bool duplicate_item(LR1_item_set x)
+{
+    for (auto it : dfa)
+    {
+        if (*(it.second) == x)
+            return true;
+    }
+    return false;
+}
+
+void print_item_mapping()
+{
+    for (auto it : gotos_table)
+    {
+        for (auto temp : it.second)
+        {
+            cout << it.first << " -> " << temp.first << " : " << temp.second << endl;
+        }
+    }
+}
 /*
  "A" -> " E C D.B ", ["a"]
  "B" -> " "  [first("Ba")]

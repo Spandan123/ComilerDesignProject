@@ -1,7 +1,8 @@
 // Created by aviroop on 5/4/24.
 //
 #include "lexer/token_stream.h"
-
+#include "parser/parser.h"
+#include "parser/LR1_automaton.h"
 int main(int argc, char *argv[])
 {
     char *ffp = "test.txt";
@@ -16,6 +17,9 @@ int main(int argc, char *argv[])
     fprintf(new_fp, "%s", token_stream(fp));
     fclose(fp);
     fclose(new_fp);
+    run_parser();
+    // LR1_item_set::create_LR1_automaton();
+    // print_item_mapping();
     remove(argv[0]);
     return 0;
 }

@@ -1,7 +1,7 @@
 //
 // Created by aviroop on 5/4/24.
 //
-
+#pragma once
 #ifndef FINAL_ASSIGNMENT_LEXEME_H
 #define FINAL_ASSIGNMENT_LEXEME_H
 

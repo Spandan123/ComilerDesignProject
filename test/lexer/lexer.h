@@ -1,7 +1,7 @@
 //
 // Created by aviroop on 4/4/24.
 //
-
+#pragma once
 #ifndef FINAL_ASSIGNMENT_LEXER_H
 #define FINAL_ASSIGNMENT_LEXER_H
 #endif // FINAL_ASSIGNMENT_LEXER_H

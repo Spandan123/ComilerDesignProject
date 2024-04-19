@@ -1,3 +1,5 @@
+#pragma once
+#pragma GCC diagnostic ignored "-Wwrite-strings"
 #include <string.h>
 #include <stdlib.h>
 #include "lexer.h"
