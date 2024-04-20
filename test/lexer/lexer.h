@@ -8,7 +8,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-
+#include "../symbol-table/symbolTable.h"
 struct token
 {
     char *value;
@@ -148,6 +148,7 @@ struct token tokenize(char *lexeme)
     struct token new_token;
     int len = 0;
     char *temp = lexeme;
+    char *last_type = (char *)malloc(sizeof(char) * 10);
     for (; *temp != '\0'; temp++)
     {
         len++;
@@ -155,11 +156,15 @@ struct token tokenize(char *lexeme)
     new_token.value = (char *)malloc((len + 1) * sizeof(char));
     new_token.len = len;
     strcpy(new_token.value, lexeme);
-    // printf("Lexeme: %s\n", lexeme);
+    printf("Lexeme: %s\n", lexeme);
     if (is_keyword(lexeme))
     {
         new_token.type = (char *)malloc(sizeof(char) * 8);
         strcpy(new_token.type, "keyword");
+        if (strcmp(lexeme, "int") == 0 || strcmp(lexeme, "float") == 0 || strcmp(lexeme, "double") == 0 || strcmp(lexeme, "char") == 0)
+        {
+            last_type = lexeme;
+        }
     }
     else if (len == 1 && is_special_character(*lexeme))
     {
@@ -186,6 +191,8 @@ struct token tokenize(char *lexeme)
     {
         new_token.type = (char *)malloc(sizeof(char) * 11);
         strcpy(new_token.type, "identifier");
+        create_entry(lexeme);
+        insert(lexeme, last_type, 0);
     }
     else
     {
@@ -193,6 +200,7 @@ struct token tokenize(char *lexeme)
         return new_token;
     };
     new_token.valid = 1;
+    print_symbol_table();
     return new_token;
 }
 
