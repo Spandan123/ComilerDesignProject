@@ -10,6 +10,20 @@ unordered_map<int, unordered_map<string, int>> GOTO;
 //<state , <Spos,terminals>>
 unordered_map<int, unordered_map<string, string>> ACTION;
 
+template <typename T>
+void print_stack(stack<T> s)
+{
+    T a;
+    cout << "\n";
+    while (!s.empty())
+    {
+        a = s.top();
+        s.pop();
+        cout << a << " ";
+    }
+    cout << "\n";
+}
+
 void create_parsing_table()
 {
     create_cfg();
@@ -97,126 +111,146 @@ bool parse(char *input)
         string top = str_input.substr(offset, n - offset);
         offset = n + 1;
         cout << "TOP : " << top << endl;
-        // if (curr_scope < 0)
-        // {
-        //     return false;
-        // }
-        // if (strcmp(top, "{") == 0)
-        // {
-        //     curr_scope++;
-        // }
-        // if (strcmp(top, "}") == 0)
-        // {
-        //     remove(top, curr_scope);
-        //     curr_scope--;
-        //     if (function_pararm)
-        //     {
-        //         function_pararm = false;
-        //         remove(top, curr_scope);
-        //         curr_scope--;
-        //     }
-        //     if (loop_param)
-        //     {
-        //         loop_param = false;
-        //         remove(top, curr_scope);
-        //         curr_scope--;
-        //     }
-        //     if (curr_scope < 0)
-        //     {
-        //         return false;
-        //     }
-        // }
-        // if (strcmp(top, "(") == 0)
-        // {
-        //     if (st.empty())
-        //     {
-        //         return false;
-        //     }
-        //     else if (st.top() == "id")
-        //     {
-        //         function_pararm = true;
-        //         curr_scope++;
-        //     }
-        //     else if (st.top() == "for")
-        //     {
-        //         loop_param = true;
-        //         curr_scope++;
-        //     }
-        // }
-        if (st.empty())
+        if (curr_scope < 0)
         {
-            cout << "Empty stack!\n";
-            st.push(top);
-            continue;
+            return false;
         }
-        // if (strcmp(top, "id") == 0)
+        if (top == "{")
+        {
+            curr_scope++;
+        }
+        if (top == "}")
+        {
+            remove((char *)top.c_str(), curr_scope);
+            print_symbol_table();
+            curr_scope--;
+            if (function_pararm)
+            {
+                function_pararm = false;
+                remove((char *)top.c_str(), curr_scope);
+                // print_symbol_table();
+                curr_scope--;
+            }
+            if (loop_param)
+            {
+                loop_param = false;
+                remove((char *)top.c_str(), curr_scope);
+                // print_symbol_table();
+                curr_scope--;
+            }
+            if (curr_scope < 0)
+            {
+                return false;
+            }
+        }
+        if (top == "(")
+        {
+            if (st.empty())
+            {
+                return false;
+            }
+            else if (st.top() == "id")
+            {
+                function_pararm = true;
+                curr_scope++;
+            }
+            else if (st.top() == "for")
+            {
+                loop_param = true;
+                curr_scope++;
+            }
+        }
+        // if (st.empty())
         // {
-        //     create_entry(top);
-        //     if (!st.empty() && st.top() == "basic_type")
+        //     cout << "Empty stack!\n";
+        //     st.push(top);
+        //     continue;
+        // }
+        if (top == "id")
+        {
+            create_entry((char *)top.c_str());
+            // print_symbol_table();
+            if (!st.empty() && st.top() == "basic_type")
+            {
+                // give id name
+                if (!insert((char *)top.c_str(), (char *)last_type.c_str(), curr_scope))
+                {
+                    return false;
+                }
+            }
+        }
+        //     if (isNonTerminal(top))
         //     {
-        //         // give id name
-        //         if (!insert(top, (char *)last_type.c_str(), curr_scope))
+        //         cout << "Found non terminal : " << top << "\n";
+        //         if (GOTO.find(states.top()) == GOTO.end() && GOTO[states.top()].find(string(top)) == GOTO[states.top()].end())
         //         {
+        //             cout << "Invalid input!\n";
         //             return false;
         //         }
+        //         states.push(GOTO[states.top()][top]);
+        //         st.push(top);
         //     }
+        //     else
+        //     {
+        //         cout << "Found terminal : " << top << "\n";
+        //         if (ACTION.find(states.top()) == ACTION.end() && ACTION[states.top()].find(string(top)) == ACTION[states.top()].end())
+        //         {
+        //             cout << "Invalid input!\n";
+        //             return false;
+        //         }
+        //         char action = ACTION[states.top()][top][0];
+        //         if (action == 'R')
+        //         {
+        //             cout << "Action : reduce \n";
+        //             int rule_num = stoi(ACTION[states.top()][string(top)].substr(1));
+        //             string lhs = get_prod(rule_num).first;
+        //             string rhs = get_prod(rule_num).second;
+        //             vector<string> rhs_vec = split(rhs, ' ');
+        //             for (int i = rhs_vec.size() - 1; i >= 0; i--)
+        //             {
+        //                 string temp = st.top();
+        //                 if (temp != rhs_vec[i])
+        //                     return false;
+        //                 st.pop();
+        //                 if (!states.empty())
+        //                     states.pop();
+        //                 else
+        //                     return false;
+        //             }
+        //             st.push(lhs);
+        //             states.push(GOTO[states.top()][st.top()]);
+        //         }
+        //         else
+        //         {
+        //             cout << "Action : shift \n";
+        //             cout << "input Stack before shift : ";
+        //             print_stack(st);
+        //             st.push(top);
+        //             cout << "input stack after shift : ";
+        //             print_stack(st);
+        //             string act = ACTION[states.top()][st.top()];
+        //             if (act == "")
+        //             {
+        //                 cout << "Invalid\n";
+        //                 return false;
+        //             }
+        //             cout << "action : " << ACTION[states.top()][st.top()] << endl;
+        //             cout << "states before shift : ";
+        //             print_stack(states);
+        //             states.push(stoi(ACTION[states.top()][st.top()].substr(1)));
+        //             cout << "states after shift : ";
+        //             print_stack(states);
+        //         }
+        //     }
+        //     cout << "TOP : " << top << endl;
         // }
-        if (isNonTerminal(top))
-        {
-            cout << "Found non terminal : " << top << "\n";
-            if (GOTO.find(states.top()) == GOTO.end() && GOTO[states.top()].find(string(top)) == GOTO[states.top()].end())
-            {
-                cout << "Invalid input!\n";
-                return false;
-            }
-            states.push(GOTO[states.top()][top]);
-            st.push(top);
-        }
-        else
-        {
-            cout << "Found terminal : " << top << "\n";
-            if (ACTION.find(states.top()) == ACTION.end() && ACTION[states.top()].find(string(top)) == ACTION[states.top()].end())
-            {
-                cout << "Invalid input!\n";
-                return false;
-            }
-            char action = ACTION[states.top()][string(top)][0];
-            if (action == 'R')
-            {
-                cout << "Action : reduce \n";
-                int rule_num = stoi(ACTION[states.top()][string(top)].substr(1));
-                string lhs = get_prod(rule_num).first;
-                string rhs = get_prod(rule_num).second;
-                vector<string> rhs_vec = split(rhs, ' ');
-                for (int i = rhs_vec.size() - 1; i >= 0; i--)
-                {
-                    string temp = st.top();
-                    if (temp != rhs_vec[i])
-                        return false;
-                    st.pop();
-                    if (!states.empty())
-                        states.pop();
-                    else
-                        return false;
-                }
-                st.push(lhs);
-                states.push(GOTO[states.top()][st.top()]);
-            }
-            else
-            {
-                cout << "Action : shift \n";
-                st.push(top);
-                cout << "action : " << ACTION[states.top()][st.top()] << endl;
-                states.push(stoi(ACTION[states.top()][st.top()].substr(1)));
-            }
-        }
-        cout << "TOP : " << top << endl;
+        // if (!st.empty() && st.top() == "augmented_start")
+        // {
+        //     print_symbol_table();
+        //     return true;
+        // }
+        // else
+        //     return false;
     }
-    if (!st.empty() && st.top() == "augmented_start")
-    {
-        print_symbol_table();
-        return true;
-    }
-    else
-        return false;
+    return true;
 }

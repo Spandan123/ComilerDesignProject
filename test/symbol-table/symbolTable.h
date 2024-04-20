@@ -4,6 +4,10 @@
 #include <string.h>
 #define MAX_SIZE 1024L
 
+int NUM = 0;
+
+void print_symbol_table();
+
 struct scope_info
 {
 public:
@@ -40,10 +44,13 @@ bool create_entry(char *name)
         hashtable[index]->name = (char *)malloc(sizeof(char) * (strlen(name) + 1));
         strcpy(hashtable[index]->name, name);
         hashtable[index]->scope = NULL;
+        print_symbol_table();
+        NUM++;
         return true;
     }
     else
     {
+        cout << "id already exists";
         return false;
     }
 }
@@ -59,6 +66,7 @@ bool insert(char *name, char *type, int scope_level)
     long index = hash_(name);
     if (hashtable[index] == NULL)
     {
+        cout << "id already exists\n";
         return false;
     }
     else
@@ -66,12 +74,14 @@ bool insert(char *name, char *type, int scope_level)
         // hash collision
         if (strcmp(hashtable[index]->name, name) != 0)
         {
+            cout << "invalid hashvalue\n";
             return false;
         }
 
         // invalid scope
         if (hashtable[index]->scope->scope_level >= scope_level)
         {
+            cout << "invalid scope\n";
             return false;
         }
 
@@ -81,6 +91,8 @@ bool insert(char *name, char *type, int scope_level)
         strcpy(new_scope->type, type);
         new_scope->prev = hashtable[index]->scope;
         hashtable[index]->scope = new_scope;
+        cout << "inserting id : " << name;
+        print_symbol_table();
         return true;
     }
 }
@@ -112,17 +124,19 @@ bool remove(char *name, int scope_level)
 
 void print_symbol_table()
 {
+    if (NUM == 0)
+        return;
     for (int i = 0; i < MAX_SIZE; i++)
     {
-        printf("\n\n\n%-50s %10s %4s\n", "Name", "Type", "Level");
+        printf("\n\n\n%-10s %10s %4s\n", "Name", "Type", "Level");
         if (hashtable[i])
         {
             char *name = hashtable[i]->name;
-            struct scope_info *scope = hashtable[i]->scope;
-            while (scope != NULL)
+            struct scope_info *tempscope = hashtable[i]->scope;
+            while (tempscope != NULL)
             {
-                printf("%-50s %10s %4d\n", name, scope->type, scope->scope_level);
-                scope = scope->prev;
+                printf("%-10s %10s %4d\n", name, tempscope->type, tempscope->scope_level);
+                tempscope = tempscope->prev;
             }
         }
     }

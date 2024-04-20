@@ -251,13 +251,13 @@ void run_parser()
     initialize_first();
     find_first(cfg);
     find_first(cfg);
-    // cout << BOLD << UNDERLINE << YELLOW << "\nFirst" << RESET << " : \n";
-    // printMap(first);
+    cout << BOLD << UNDERLINE << YELLOW << "\nFirst" << RESET << " : \n";
+    printMap(first);
     initialise_follow(cfg);
     find_follow(cfg);
     find_follow(cfg);
-    // cout << "\n====================================================================\n"
-    //  << BOLD << UNDERLINE << YELLOW << "\nFollow" << RESET << " : \n";
-    // printMap(follow);
-    // cout << "\n\n\n";
+    cout << "\n====================================================================\n"
+         << BOLD << UNDERLINE << YELLOW << "\nFollow" << RESET << " : \n";
+    printMap(follow);
+    cout << "\n\n\n";
 }

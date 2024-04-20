@@ -217,9 +217,15 @@ public:
         }
         // for (auto items : dfa)
         // {
+        // if (items.first == 24)
+        // {
         //     cout << "\n\nItem " << items.first << "\n";
         //     items.second->print_item();
+        //     break;
         // }
+        // cout << "\n\nItem " << items.first << "\n";
+        // items.second->print_item();
+        //}
     }
 };
 
