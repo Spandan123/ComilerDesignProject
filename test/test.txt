@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 struct pair{
     int first_, second_;
 };
