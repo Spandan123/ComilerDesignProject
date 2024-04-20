@@ -18,8 +18,8 @@ int main(int argc, char *argv[])
     fclose(fp);
     fclose(new_fp);
     run_parser();
-    // LR1_item_set::create_LR1_automaton();
-    // print_item_mapping();
+    LR1_item_set::create_LR1_automaton();
+    print_item_mapping();
     remove(argv[0]);
     return 0;
 }
