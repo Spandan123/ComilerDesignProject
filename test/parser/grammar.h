@@ -67,10 +67,10 @@ void create_cfg()
         " float ",
         " char ",
         " void ",
-        " type * "};
+        " basic_type * "};
 
     cfg["user_defined_declaration"] = {
-        " struct id id = { assignment_list }  ",
+        " struct id id = { assignment_list } ",
         " union id id = { assignment } ",
         " enum id id = id "};
 
@@ -93,11 +93,16 @@ void create_cfg()
         " expression "};
 
     cfg["stmt"] = {
+        " preprocessor_directive ",
         " expression ; "};
 
+    cfg["preprocessor_directive"] = {
+        " #define id val ",
+        " #include val ",
+        " #pragma id "};
+
     cfg["loop"] = {
-        " for ( expression ; expression ; expression ) { stmt_list } ",
-        " for ( expression ; expression ; expression ) stmt "};
+        " for ( expression ; expression ; expression ) { stmt_list } "};
 
     cfg["definition"] = {
         " function_definition ",
@@ -191,4 +196,22 @@ void print_annotated_cfg()
     {
         cout << i + 1 << ") " << annotated_cfg[i].first << " -> " << annotated_cfg[i].second << endl;
     }
+}
+
+int get_position(const string &lhs, const string &rhs)
+{
+    for (int i = 0; i < annotated_cfg.size(); i++)
+    {
+        if (annotated_cfg[i].first == lhs && rhs == annotated_cfg[i].second)
+        {
+
+            return i;
+        }
+    }
+    return -1;
+}
+
+pair<string, string> get_prod(int index)
+{
+    return make_pair(annotated_cfg[index].first, annotated_cfg[index].second);
 }

@@ -3,6 +3,7 @@
 #include "lexer/token_stream.h"
 #include "parser/parser.h"
 #include "parser/LR1_automaton.h"
+#include "parser/parsing_table.h"
 int main(int argc, char *argv[])
 {
     char *ffp = "test.txt";
@@ -14,12 +15,19 @@ int main(int argc, char *argv[])
         exit(1);
     }
     FILE *new_fp = fopen("generated_token.txt", "w");
-    fprintf(new_fp, "%s", token_stream(fp));
+    char *x = (char *)malloc(sizeof(char) * 1024);
+    x = token_stream(fp);
+    fprintf(new_fp, "%s", x);
     fclose(fp);
     fclose(new_fp);
     run_parser();
     LR1_item_set::create_LR1_automaton();
-    print_item_mapping();
+    // print_item_mapping();
+    create_parsing_table();
+    print_parsing_table();
+    cout << "\n\nToken stream : \n"
+         << x << "\n\n";
+    parse(x);
     remove(argv[0]);
     return 0;
 }

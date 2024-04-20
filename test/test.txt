@@ -1,7 +1,4 @@
 #include <stdio.h>
-#define A 1
-
-a++;
 
 struct pair{
     int first_, second_;
