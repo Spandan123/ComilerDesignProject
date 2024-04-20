@@ -14,17 +14,22 @@ int main(int argc, char *argv[])
         remove(argv[0]);
         exit(1);
     }
-    FILE *new_fp = fopen("generated_token.txt", "w");
+    FILE *new_fp = fopen("actual.txt", "r");
     char *x = (char *)malloc(sizeof(char) * 1024);
-    x = token_stream(fp);
-    fprintf(new_fp, "%s", x);
+    fscanf(new_fp, "%[^\n]s", x);
+    cout << x;
+    // x = token_stream(fp);
+    // fprintf(new_fp, "%s", x);
     fclose(fp);
     fclose(new_fp);
     run_parser();
+    // printMap(first);
+    // printf("\n\n");
+    // printMap(follow);
     LR1_item_set::create_LR1_automaton();
     // print_item_mapping();
     create_parsing_table();
-    print_parsing_table();
+    // print_parsing_table();
     cout << "\n\nToken stream : \n"
          << x << "\n\n";
     parse(x);
