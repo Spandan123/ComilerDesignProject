@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <bits/stdc++.h>
+using namespace std;
 #define MAX_SIZE 1024L
 
 int NUM = 0;
