@@ -124,8 +124,7 @@ bool remove(char *name, int scope_level)
 
 void print_symbol_table()
 {
-    if (NUM == 0)
-        return;
+    if(NUM==0) return;
     for (int i = 0; i < MAX_SIZE; i++)
     {
         printf("\n\n\n%-10s %10s %4s\n", "Name", "Type", "Level");

@@ -122,20 +122,20 @@ bool parse(char *input)
         if (top == "}")
         {
             remove((char *)top.c_str(), curr_scope);
-            print_symbol_table();
+            //print_symbol_table();
             curr_scope--;
             if (function_pararm)
             {
                 function_pararm = false;
                 remove((char *)top.c_str(), curr_scope);
-                // print_symbol_table();
+                //print_symbol_table();
                 curr_scope--;
             }
             if (loop_param)
             {
                 loop_param = false;
                 remove((char *)top.c_str(), curr_scope);
-                // print_symbol_table();
+                //print_symbol_table();
                 curr_scope--;
             }
             if (curr_scope < 0)
@@ -169,7 +169,7 @@ bool parse(char *input)
         if (top == "id")
         {
             create_entry((char *)top.c_str());
-            // print_symbol_table();
+            //print_symbol_table();
             if (!st.empty() && st.top() == "basic_type")
             {
                 // give id name
