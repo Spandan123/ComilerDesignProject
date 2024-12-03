@@ -1,0 +1,1 @@
+Folder contains parser, LR(1) automaton and lexer implementation
